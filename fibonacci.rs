@@ -18,7 +18,7 @@ fn fibonacci<'a>(n: &u64, memo: &'a mut HashMap<u64, u64>) -> &'a u64 {
 fn main() {
     let inputs: Vec<String> = env::args().collect();
     if inputs.len() < 2 {
-        eprintln!("Usage: ./SAFEROBO 10");
+        eprintln!("Usage: ./fibonacci 10");
         return
     }
     let mut memo: HashMap<u64, u64> = HashMap::new();
