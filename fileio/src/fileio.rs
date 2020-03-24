@@ -1,3 +1,6 @@
+extern crate rand;
+
+use rand::Rng;
 use std::env;
 use std::error::Error; 
 use std::fs;
@@ -92,7 +95,7 @@ fn operate_on_file(path: &Path, filemode: &OpenFileMode) {
     };
 }
 
-fn main() {
+pub fn main() {
     let inputs: Vec<String> = env::args().collect();
     if inputs.len() < 3 {
         panic!("\n    Usage: ./fileio <filepath> <operation>".to_owned() + 
@@ -103,4 +106,58 @@ fn main() {
     let filemode: OpenFileMode = inputs[2].parse().unwrap();
 
     operate_on_file(&path, &filemode);
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_create_and_remove() {
+        let mut rng = rand::thread_rng();
+        let filepath_str = format!("/tmp/abc-fileio-{}.txt", rng.gen_range(0, 1000));
+        let filepath = Path::new(&(filepath_str));
+        assert_eq!((), operate_on_file(filepath, &OpenFileMode::Create));
+        assert_eq!((), operate_on_file(filepath, &OpenFileMode::Remove));
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_create_panic_no_access() {
+        let filepath = Path::new(&"/etc/abc-fileio.txt");
+        operate_on_file(filepath, &OpenFileMode::Create);
+        operate_on_file(filepath, &OpenFileMode::Remove);
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_create_panic_invalid_path() {
+        let filepath = Path::new(&"/tmp/abc/def/abc-fileio.txt");
+        operate_on_file(filepath, &OpenFileMode::Create);
+        operate_on_file(filepath, &OpenFileMode::Remove);
+    }
+
+    #[test]
+    fn test_write_and_read() {
+        let mut rng = rand::thread_rng();
+        let filepath_str = format!("/tmp/abc-fileio-{}.txt", rng.gen_range(0, 1000));
+        let filepath = Path::new(&filepath_str);
+        assert_eq!((), operate_on_file(filepath, &OpenFileMode::Create));
+        assert_eq!((), operate_on_file(filepath, &OpenFileMode::Write));
+        let mut file = fs::File::open(&filepath_str).unwrap();
+        let mut contents = String::new();
+        file.read_to_string(&mut contents).unwrap();
+        assert_eq!(contents, "Written to the file");
+        assert_eq!((), operate_on_file(filepath, &OpenFileMode::Remove));
+    }
+
+    #[test]
+    fn test_append_and_read() {
+        let filepath = Path::new(&"/tmp/abc-fileio.txt");
+        assert_eq!((), operate_on_file(filepath, &OpenFileMode::Create));
+        assert_eq!((), operate_on_file(filepath, &OpenFileMode::Write));        
+        assert_eq!((), operate_on_file(filepath, &OpenFileMode::Append));
+        assert_eq!((), operate_on_file(filepath, &OpenFileMode::Remove));
+ 
+    }    
 }
