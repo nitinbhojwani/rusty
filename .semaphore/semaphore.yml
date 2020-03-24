@@ -8,7 +8,7 @@ agent:
     - name: main
       image: 'nitinbhojwain/rust-non-root:1.38.0'
   image_pull_secrets:
-    - name: Docker Hub
+    - name: dockerhub-pull-secrets
 blocks:
   - name: Test
     task:
