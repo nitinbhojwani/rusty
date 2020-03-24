@@ -16,3 +16,8 @@ blocks:
             - checkout
             - cargo build --verbose
             - cargo test --verbose
+      secrets:
+        - name: Docker Hub
+      prologue:
+        commands:
+          - echo $DOCKER_PASSWORD | docker login --username "$DOCKER_USERNAME" --password-stdin
