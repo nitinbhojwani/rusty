@@ -7,6 +7,8 @@ agent:
   containers:
     - name: main
       image: 'nitinbhojwain/rust-non-root:1.38.0'
+  image_pull_secrets:
+    - name: Docker Hub
 blocks:
   - name: Test
     task:
@@ -20,4 +22,3 @@ blocks:
       prologue:
         commands:
           - checkout
-          - echo $DOCKER_PASSWORD | docker login --username "$DOCKER_USERNAME" --password-stdin
