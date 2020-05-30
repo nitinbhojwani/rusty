@@ -3,7 +3,7 @@ name = "rusty"
 version = "0.1.0"
 authors = ["Nitin Bhojwani <nitinbhojwani@outlook.com>"]
 edition = "2018"
-members = ["fibonacci", "fileio", "problems", "scheduler"]
+members = ["fibonacci", "fileio", "problems"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
